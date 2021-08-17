@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>4.17</version>
+    <version>4.19</version>
     <relativePath />
   </parent>
 
@@ -39,7 +39,7 @@
   </developers>
 
   <properties>
-    <revision>1.29.3</revision>
+    <revision>1.30.2</revision>
     <changelist>-SNAPSHOT</changelist>
     <!-- in minikube
     minikube ip | sed -e 's/\([0-9]*\.[0-9]*\.[0-9]*\).*/\1.1/' -->
@@ -47,7 +47,7 @@
     <jenkins.host.address />
     <slaveAgentPort />
     <java.level>8</java.level>
-    <jenkins.version>2.263</jenkins.version>
+    <jenkins.version>2.263.1</jenkins.version>
     <no-test-jar>false</no-test-jar>
     <pipeline-model-definition.version>1.7.2</pipeline-model-definition.version>
     <useBeta>true</useBeta>
@@ -58,12 +58,12 @@
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>kubernetes-client-api</artifactId>
-      <version>4.13.2-1</version>
+      <version>5.4.1</version>
     </dependency>
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>jackson2-api</artifactId>
-      <version>2.12.1</version>
+      <version>2.12.3</version>
     </dependency>
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
@@ -130,7 +130,17 @@
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>metrics</artifactId>
-      <version>4.0.2.6</version>
+      <version>4.0.2.8</version>
+    </dependency>
+    <dependency>
+      <groupId>io.jenkins.plugins</groupId>
+      <artifactId>caffeine-api</artifactId>
+      <version>2.9.2-29.v717aac953ff3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins</groupId>
+      <artifactId>credentials-binding</artifactId>
+      <version>1.26</version>
     </dependency>
 
     <!-- for testing -->
@@ -211,7 +221,7 @@
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>bouncycastle-api</artifactId>
-      <version>2.18</version>
+      <version>2.20</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -256,7 +266,7 @@
       <dependency>
         <groupId>io.jenkins.tools.bom</groupId>
         <artifactId>bom-2.263.x</artifactId>
-        <version>25</version>
+        <version>876.vc43b4c6423b6</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
