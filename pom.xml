@@ -3,13 +3,13 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>4.19</version>
+    <version>4.35</version>
     <relativePath />
   </parent>
 
   <groupId>org.csanchez.jenkins.plugins</groupId>
   <artifactId>kubernetes</artifactId>
-  <version>${revision}${changelist}</version>
+  <version>${changelist}</version>
   <name>Kubernetes plugin</name>
   <description>Jenkins plugin to run dynamic agents in a Kubernetes cluster</description>
   <packaging>hpi</packaging>
@@ -39,31 +39,27 @@
   </developers>
 
   <properties>
-    <revision>1.30.2</revision>
-    <changelist>-SNAPSHOT</changelist>
+    <changelist>999999-SNAPSHOT</changelist>
     <!-- in minikube
     minikube ip | sed -e 's/\([0-9]*\.[0-9]*\.[0-9]*\).*/\1.1/' -->
     <connectorHost />
     <jenkins.host.address />
     <slaveAgentPort />
     <java.level>8</java.level>
-    <jenkins.version>2.263.1</jenkins.version>
+    <jenkins.version>2.303.3</jenkins.version>
     <no-test-jar>false</no-test-jar>
-    <pipeline-model-definition.version>1.7.2</pipeline-model-definition.version>
     <useBeta>true</useBeta>
-    <jenkins-test-harness.version>2.71</jenkins-test-harness.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>kubernetes-client-api</artifactId>
-      <version>5.4.1</version>
+      <version>5.11.2-182.v0f1cf4c5904e</version>
     </dependency>
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>jackson2-api</artifactId>
-      <version>2.12.3</version>
     </dependency>
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
@@ -80,7 +76,7 @@
     <dependency>
       <groupId>org.jenkinsci.plugins</groupId>
       <artifactId>kubernetes-credentials</artifactId>
-      <version>0.8.0</version>
+      <version>0.9.0</version>
     </dependency>
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
@@ -112,13 +108,11 @@
     <dependency> <!-- DeclarativeAgent -->
       <groupId>org.jenkinsci.plugins</groupId>
       <artifactId>pipeline-model-extensions</artifactId>
-      <version>${pipeline-model-definition.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency> <!-- DeclarativeGeneratorTester -->
       <groupId>org.jenkinsci.plugins</groupId>
       <artifactId>pipeline-model-definition</artifactId>
-      <version>${pipeline-model-definition.version}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -130,17 +124,15 @@
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>metrics</artifactId>
-      <version>4.0.2.8</version>
+      <version>4.1.6.1</version>
     </dependency>
     <dependency>
       <groupId>io.jenkins.plugins</groupId>
       <artifactId>caffeine-api</artifactId>
-      <version>2.9.1-23.v51c4e2c879c8</version>
     </dependency>
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>credentials-binding</artifactId>
-      <version>1.26</version>
     </dependency>
 
     <!-- for testing -->
@@ -168,7 +160,6 @@
     <dependency>
       <groupId>org.jenkinsci.plugins</groupId>
       <artifactId>pipeline-model-definition</artifactId>
-      <version>${pipeline-model-definition.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency> <!-- SnippetizerTest -->
@@ -203,7 +194,7 @@
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>ssh-agent</artifactId>
-      <version>1.20</version>
+      <version>1.23</version>
       <scope>test</scope>
       <exclusions>
         <!-- conflict with sshd module -->
@@ -221,7 +212,6 @@
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>bouncycastle-api</artifactId>
-      <version>2.20</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -249,7 +239,7 @@
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>docker-workflow</artifactId>
-      <version>1.24</version>
+      <version>1.26</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -265,15 +255,32 @@
     <dependencies>
       <dependency>
         <groupId>io.jenkins.tools.bom</groupId>
-        <artifactId>bom-2.263.x</artifactId>
-        <version>876.vc43b4c6423b6</version>
+        <artifactId>bom-2.303.x</artifactId>
+        <version>1090.v0a_33df40457a_</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
+      <!-- Fix InjectedTest -->
       <dependency>
+        <groupId>org.jenkins-ci.plugins</groupId>
+        <artifactId>docker-commons</artifactId>
+        <version>1.17</version>
+      </dependency>
+      <!-- fix requireUpperBoundDeps -->
+      <dependency><!-- jenkins-core vs. junit plugin -->
+        <groupId>javax.annotation</groupId>
+        <artifactId>javax.annotation-api</artifactId>
+        <version>1.3.2</version>
+      </dependency>
+      <dependency><!-- pipeline-model-extensions vs. io.jenkins.configuration-as-code:test-harness -->
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
         <version>2.10.2</version>
+      </dependency>
+      <dependency><!-- io.jenkins:configuration-as-code vs. org.jenkins-ci.plugins:junit -->
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.12.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -304,6 +311,7 @@
             <hudson.slaves.NodeProvisioner.MARGIN>50</hudson.slaves.NodeProvisioner.MARGIN>
             <hudson.slaves.NodeProvisioner.MARGIN0>0.85</hudson.slaves.NodeProvisioner.MARGIN0>
             <jenkins.host.address>${jenkins.host.address}</jenkins.host.address>
+            <org.csanchez.jenkins.plugins.kubernetes.pipeline.PodTemplateStepExecution.verbose>true</org.csanchez.jenkins.plugins.kubernetes.pipeline.PodTemplateStepExecution.verbose>
           </systemProperties>
         </configuration>
       </plugin>
