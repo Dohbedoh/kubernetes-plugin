@@ -19,7 +19,6 @@ package org.csanchez.jenkins.plugins.kubernetes.pipeline;
 import hudson.model.TaskListener;
 import hudson.util.LogTaskListener;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.dsl.LogWatch;
 import io.fabric8.kubernetes.client.dsl.TailPrettyLoggable;
 import io.fabric8.kubernetes.client.dsl.TimeTailPrettyLoggable;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
@@ -72,7 +71,7 @@ public class ContainerLogStepExecution extends SynchronousNonBlockingStepExecuti
 
             String podName = nodeContext.getPodName();
 
-            TimeTailPrettyLoggable<LogWatch> limited = limitBytes > 0
+            TimeTailPrettyLoggable limited = limitBytes > 0
                     ? client.pods() //
                             .inNamespace(nodeContext.getNamespace()) //
                             .withName(podName).inContainer(containerName).limitBytes(limitBytes)
@@ -80,7 +79,7 @@ public class ContainerLogStepExecution extends SynchronousNonBlockingStepExecuti
                             .inNamespace(nodeContext.getNamespace()) //
                             .withName(podName).inContainer(containerName);
 
-            TailPrettyLoggable<LogWatch> since = sinceSeconds > 0 ? limited.sinceSeconds(sinceSeconds) : limited;
+            TailPrettyLoggable since = sinceSeconds > 0 ? limited.sinceSeconds(sinceSeconds) : limited;
 
             String log = (tailingLines > 0 ? since.tailingLines(tailingLines) : since).getLog();
 

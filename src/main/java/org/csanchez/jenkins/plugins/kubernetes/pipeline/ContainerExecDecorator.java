@@ -45,7 +45,7 @@ import java.util.regex.Matcher;
 
 import hudson.AbortException;
 import io.fabric8.kubernetes.api.model.Container;
-import org.apache.commons.io.output.NullOutputStream;
+import io.fabric8.kubernetes.api.model.Status;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate;
 import org.csanchez.jenkins.plugins.kubernetes.KubernetesSlave;
@@ -64,7 +64,6 @@ import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.dsl.ExecListener;
 import io.fabric8.kubernetes.client.dsl.ExecWatch;
 import io.fabric8.kubernetes.client.dsl.Execable;
-import okhttp3.Response;
 
 import static org.csanchez.jenkins.plugins.kubernetes.pipeline.Constants.EXIT;
 
@@ -382,7 +381,7 @@ public class ContainerExecDecorator extends LauncherDecorator implements Seriali
                     closables = new ArrayList<>();
                 }
 
-                Execable<String, ExecWatch> execable = getClient().pods().inNamespace(getNamespace()).withName(getPodName()).inContainer(containerName) //
+                Execable execable = getClient().pods().inNamespace(getNamespace()).withName(getPodName()).inContainer(containerName) //
                         .redirectingInput(STDIN_BUFFER_SIZE) // JENKINS-50429
                         .writingOutput(stream).writingError(stream).writingErrorChannel(error)
                         .usingListener(new ExecListener() {
@@ -417,6 +416,15 @@ public class ContainerExecDecorator extends LauncherDecorator implements Seriali
                                             "onClose called but latch already finished. This indicates a bug in the kubernetes-plugin");
                                 }
                                 finished.countDown();
+                            }
+                            @Override
+                            public void onExit(int code, Status status) {
+                                try {
+                                    error.write(status.getMessage().getBytes(StandardCharsets.UTF_8));
+                                    error.flush();
+                                } catch (IOException e) {
+                                    LOGGER.log(Level.WARNING, "onExit failed to print status message '" + status.getMessage() + "'", e);
+                                }
                             }
                         });
 
