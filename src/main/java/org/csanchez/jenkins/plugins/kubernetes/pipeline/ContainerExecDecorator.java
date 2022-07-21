@@ -388,6 +388,21 @@ public class ContainerExecDecorator extends LauncherDecorator implements Seriali
                 int attempts = 0;
                 ExecWatchWrapper watchWrapper = null;
                 while (attempts < WEBSOCKET_CONNECTION_MAX_RETRY) {
+
+                    if (attempts > 0) {
+                        // Exponential backoff: Waits 2s, next attempt 4s, next attempts 8s, next attempts 16s, ...
+                        // with a maximum of wait of WEBSOCKET_CONNECTION_MAX_RETRY_BACKOFF
+                        long backoffInSeconds = Math.min(Integer.toUnsignedLong((int) Math.pow(2, attempts)), WEBSOCKET_CONNECTION_MAX_RETRY_BACKOFF);
+                        launcher.getListener().getLogger().println("Retrying in " + backoffInSeconds + "s ...");
+                        try {
+                            Thread.sleep(backoffInSeconds * 1000);
+                        } catch (InterruptedException ex) {
+                            launcher.getListener().getLogger().println("Retry wait interrupted");
+                        } finally {
+                            launcher.getListener().getLogger().println("Retrying...");
+                        }
+                    }
+                    
                     try {
                         final AtomicBoolean alive = new AtomicBoolean(false);
                         final CountDownLatch started = new CountDownLatch(1);
@@ -460,26 +475,11 @@ public class ContainerExecDecorator extends LauncherDecorator implements Seriali
                         
                         watchWrapper = new ExecWatchWrapper(watch, alive, finished);
                         break;
-                    } catch (Exception e) {
-                        launcher.getListener().error("Failed to start websocket connection:");
+                    } catch (IOException e) {
+                        launcher.getListener().error("Failed to start websocket connection: " + e.getMessage());
                         e.printStackTrace(launcher.getListener().getLogger());
                     } finally {
                         attempts++;
-                    }
-
-                    if (attempts < WEBSOCKET_CONNECTION_MAX_RETRY) {
-                        // Exponential backoff: Waits 2s, next attempt 4s, next attempts 8s, next attempts 16s, ...
-                        // with a maximum of wait of WEBSOCKET_CONNECTION_MAX_RETRY_BACKOFF
-                        long backoffInSeconds = Math.min(Integer.toUnsignedLong((int) Math.pow(2, attempts)),
-                            WEBSOCKET_CONNECTION_MAX_RETRY_BACKOFF);
-                        launcher.getListener().getLogger().println("Retrying in " + backoffInSeconds + "s ...");
-                        try {
-                            Thread.sleep(backoffInSeconds * 1000);
-                        } catch (InterruptedException ex) {
-                            launcher.getListener().getLogger().println("Retry wait interrupted");
-                        } finally {
-                            launcher.getListener().getLogger().println("Retrying...");
-                        }
                     }
                 }
 
