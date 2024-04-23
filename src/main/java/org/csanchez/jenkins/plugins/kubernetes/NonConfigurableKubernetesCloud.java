@@ -24,6 +24,12 @@ public class NonConfigurableKubernetesCloud extends KubernetesCloud {
     public void removeTemplate(PodTemplate template) {}
 
     @Override
+    @SuppressWarnings("unused ") // stapler
+    public boolean isConfigurable() {
+        return false;
+    }
+
+    @Override
     public Cloud reconfigure(@NonNull StaplerRequest req, JSONObject form) throws Descriptor.FormException {
         return DescriptorImpl.class.cast(getDescriptor()).newInstance(req, form);
     }

@@ -21,12 +21,15 @@ THE SOFTWARE.
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:t="/lib/hudson">
     <l:header />
     <l:side-panel>
+        <j:set var="configurableCloud" value="${app.hasPermission(app.ADMINISTER) and it.isConfigurable()}"/>
         <l:tasks>
             <l:task contextMenu="false" href="." icon="symbol-computer" title="${%Status}"/>
             <l:task href="templates" icon="symbol-details" title="${%Pod Templates}"/>
             <l:task href="configure" icon="symbol-settings"
-                    title="${app.hasPermission(app.ADMINISTER) ? '%Configure' : '%View Configuration'}"/>
-            <l:delete permission="${app.ADMINISTER}" title="${%Delete Cloud}" message="${%delete.cloud(it.displayName)}"/>
+                    title="${configurableCloud ? '%Configure' : '%View Configuration'}"/>
+            <j:if test="${configurableCloud}">
+                <l:delete permission="${app.ADMINISTER}" title="${%Delete Cloud}" message="${%delete.cloud(it.displayName)}"/>
+            </j:if>
             <t:actions />
         </l:tasks>
         <j:forEach var="action" items="${it.allActions}">

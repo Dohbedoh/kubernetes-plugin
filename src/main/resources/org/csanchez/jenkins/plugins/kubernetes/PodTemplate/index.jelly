@@ -20,7 +20,8 @@ THE SOFTWARE.
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:f="/lib/form">
   <l:layout permission="${app.SYSTEM_READ}" title="${%Pod template settings}">
-    <j:set var="readOnlyMode" value="${!app.hasPermission(app.ADMINISTER)}"/>
+    <j:set var="configurableCloud" value="${app.hasPermission(app.ADMINISTER) and it.isConfigurable()}"/>
+    <j:set var="readOnlyMode" value="${!configurableCloud}"/>
     <l:breadcrumb title="${it.name}"/>
 
     <st:include page="sidepanel.jelly"/>
@@ -33,11 +34,11 @@ THE SOFTWARE.
         <!-- main body of the configuration -->
         <st:include it="${instance}" page="config.jelly"/>
 
-        <l:isAdmin>
+        <j:if test="${configurableCloud}">
           <f:bottomButtonBar>
             <f:submit value="${%Save}"/>
           </f:bottomButtonBar>
-        </l:isAdmin>
+        </j:if>
       </f:form>
       <l:isAdmin>
         <st:adjunct includes="lib.form.confirm"/> 

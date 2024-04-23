@@ -18,13 +18,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:t="/lib/hudson">
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:t="/lib/hudson">
     <l:header />
     <l:side-panel>
         <l:tasks>
             <l:task href="" icon="symbol-settings"
-                    title="${app.hasPermission(app.ADMINISTER) ? '%Configure' : '%View Configuration'}"/>
-            <l:delete permission="${app.ADMINISTER}" title="${%Delete Pod Template}" message="${%delete.template(it.name)}"/>
+                    title="${configurableCloud ? '%Configure' : '%View Configuration'}"/>
+            <j:if test="${configurableCloud}">
+                <l:delete permission="${app.ADMINISTER}" title="${%Delete Pod Template}" message="${%delete.template(it.name)}"/>
+            </j:if>
             <t:actions />
         </l:tasks>
     </l:side-panel>

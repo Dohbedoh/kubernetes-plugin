@@ -676,6 +676,16 @@ public class PodTemplate extends AbstractDescribableImpl<PodTemplate> implements
         return FormApply.success(owner.getPodTemplateGroupUrl());
     }
 
+    @SuppressWarnings("unused") // Used by jelly
+    public Boolean isConfigurable(@AncestorInPath PodTemplateGroup owner) {
+        Jenkins j = Jenkins.get();
+        j.checkPermission(Jenkins.ADMINISTER);
+        if (owner == null) {
+            throw new IllegalStateException("Cloud could not be found");
+        }
+        return owner.isConfigurable();
+    }
+
     private PodTemplate reconfigure(@NonNull final StaplerRequest req, JSONObject form)
             throws Descriptor.FormException {
         if (form == null) {

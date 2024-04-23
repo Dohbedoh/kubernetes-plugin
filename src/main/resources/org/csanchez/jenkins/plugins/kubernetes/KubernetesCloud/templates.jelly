@@ -23,19 +23,20 @@ THE SOFTWARE.
     <!-- with empty type attribute, takes full width space, works only because core doesn't provide a CSS "app-page-body-" -->
     <l:layout title="${it.name} - ${%Pod templates}"
               type="${request.hasParameter('expand') ? 'full-screen' : 'two-column'}">
+      <j:set var="configurableCloud" value="${app.hasPermission(app.ADMINISTER) and it.isConfigurable()}"/>
       <st:include page="sidepanel.jelly"/>
 
       <l:main-panel>
         <j:choose>
             <j:when test="${not empty it.templates}">
-                <l:app-bar title="${it.name} - ${%Pod templates}">
-                    <l:isAdmin>
+                <j:if test="${configurableCloud}">
+                    <l:app-bar title="${it.name} - ${%Pod templates}">
                         <a name="newTemplate" class="jenkins-button jenkins-button--primary" href="new">
                             <l:icon src="symbol-add"/>
                             ${%Add a pod template}
                         </a>
-                    </l:isAdmin>
-                </l:app-bar>
+                    </l:app-bar>
+                </j:if>
                 <table id="templates" class="jenkins-table sortable">
                     <thead>
                     <tr>
@@ -67,12 +68,14 @@ THE SOFTWARE.
                     <section>
                         <div>
                             <div class="jenkins-!-padding-bottom-3">No pod template added yet.</div>
-                            <div>
-                                <a name="newTemplate" class="jenkins-button jenkins-button--primary" href="new">
-                                    <l:icon src="symbol-add"/>
-                                    ${%Add a pod template}
-                                </a>
-                            </div>
+                            <j:if test="${configurableCloud}">
+                                <div>
+                                    <a name="newTemplate" class="jenkins-button jenkins-button--primary" href="new">
+                                        <l:icon src="symbol-add"/>
+                                        ${%Add a pod template}
+                                    </a>
+                                </div>
+                            </j:if>
                         </div>
                     </section>
                 </div>

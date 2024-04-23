@@ -709,6 +709,12 @@ public class KubernetesCloud extends Cloud implements PodTemplateGroup {
         // t.parent = this;
     }
 
+    @Override
+    @SuppressWarnings("unused ") // stapler
+    public boolean isConfigurable() {
+        return true;
+    }
+
     /**
      * Remove a
      *
